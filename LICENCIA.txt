@@ -1,0 +1,9 @@
+MF Tech - OSINT - LICENCIA DE CLIENTE
+=====================================
+Cliente:  GitHub
+Versión:  v1.0
+PC:       máquina libre
+Vence:    2026-12-31
+
+Este paquete ya viene activado: al abrir iniciar.bat, el sistema se abre directamente.
+No compartas esta carpeta: la licencia está firmada y (si fue emitida para una PC) solo funciona en esa PC.
