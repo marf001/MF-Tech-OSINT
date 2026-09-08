@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>MF Tech - OSINT · Activación</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+      background: radial-gradient(900px 500px at 20% -10%, rgba(0,224,141,0.07), transparent 60%), radial-gradient(900px 500px at 80% -10%, rgba(0,194,255,0.07), transparent 60%), #05070d;
+      color: #d2ece4;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 3px);
+      mix-blend-mode: overlay;
+    }
+    .card {
+      position: relative;
+      max-width: 520px;
+      width: 100%;
+      background: #0a0f1a;
+      border: 1px solid #1e2a44;
+      padding: 30px;
+      box-shadow: 0 0 0 1px rgba(0,224,141,0.08), 0 12px 40px rgba(0,0,0,.5);
+      clip-path: polygon(0 16px, 16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px));
+    }
+    .card::before {
+      content: ""; position: absolute; top: -1px; left: -1px;
+      width: 30px; height: 30px; border-top: 2px solid #00e08d; border-left: 2px solid #00e08d;
+    }
+    .card::after {
+      content: ""; position: absolute; bottom: -1px; right: -1px;
+      width: 30px; height: 30px; border-bottom: 2px solid #00c2ff; border-right: 2px solid #00c2ff;
+    }
+    .top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .logo {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, #00e08d, #00c2ff);
+      clip-path: polygon(0 8px, 8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px));
+      display: grid; place-items: center; color: #02140c; font-weight: 800;
+      box-shadow: 0 0 18px rgba(0,224,141,0.35);
+    }
+    h1 { margin: 0; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; color: #d2ece4; }
+    h1::after { content: "\258B"; color: #00e08d; margin-left: 6px; animation: blink 1.1s steps(1) infinite; }
+    @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+    .sub { color: #71859f; font-size: 12px; letter-spacing: 1px; margin-bottom: 18px; }
+    .machine-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #71859f; margin: 14px 0 6px; }
+    .machine-code {
+      font-size: 17px; letter-spacing: 3px; text-align: center; padding: 16px;
+      background: #0b1220; border: 1px solid #00e08d; color: #00e08d;
+      box-shadow: 0 0 18px rgba(0,224,141,0.15); word-break: break-all;
+    }
+    ol { color: #71859f; font-size: 12.5px; line-height: 1.8; margin: 14px 0 0; padding-left: 20px; }
+    ol b { color: #d2ece4; }
+    .err { margin-top: 14px; padding: 10px 12px; background: rgba(255,92,92,.1); border: 1px solid #ff5c5c; color: #ff9b9b; font-size: 12px; }
+    button {
+      width: 100%; margin-top: 18px; padding: 13px;
+      border: 1px solid transparent; background: linear-gradient(135deg, #00e08d, #00c2ff);
+      color: #02140c; font-family: inherit; font-size: 13px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+      box-shadow: 0 0 20px rgba(0,224,141,0.3);
+    }
+    footer { margin-top: 20px; font-size: 11px; color: #55667c; text-align: center; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="top"><span class="logo">MF</span><h1>MF Tech - OSINT</h1></div>
+    <p class="sub">Sistema instalado. Falta activar la licencia.</p>
+
+    <label class="machine-label">Código de esta PC (enviáselo a tu proveedor)</label>
+    <div class="machine-code" id="machineCode">{{ machine }}</div>
+
+    <ol>
+      <li>Copiá el <b>código de esta PC</b> de arriba y mandáselo a tu proveedor.</li>
+      <li>Él te va a enviar tu archivo de licencia: <b>licencia.rel</b>.</li>
+      <li>Copiá ese archivo dentro de la carpeta <b>data</b> del programa.</li>
+      <li>Tocá <b>Reintentar</b> y el sistema se abre.</li>
+    </ol>
+
+    {% if error %}<div class="err">{{ error }}</div>{% endif %}
+
+    <button onclick="window.location.reload()">Reintentar</button>
+
+    <footer>Licencia firmada por el proveedor &mdash; v&aacute;lida solo para esta PC</footer>
+  </div>
+</body>
+</html>
