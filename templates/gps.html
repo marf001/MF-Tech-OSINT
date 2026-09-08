@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Compartir ubicación</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+      background: radial-gradient(900px 500px at 20% -10%, rgba(0,224,141,0.07), transparent 60%), #05070d;
+      color: #d2ece4;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 3px);
+      mix-blend-mode: overlay;
+    }
+    .card {
+      position: relative;
+      max-width: 480px;
+      width: 100%;
+      background: #0a0f1a;
+      border: 1px solid #1e2a44;
+      padding: 26px;
+      box-shadow: 0 0 0 1px rgba(0,224,141,0.08), 0 12px 40px rgba(0,0,0,.5);
+      clip-path: polygon(0 16px, 16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px));
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 30px; height: 30px;
+      border-top: 2px solid #00e08d;
+      border-left: 2px solid #00e08d;
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: -1px;
+      width: 30px; height: 30px;
+      border-bottom: 2px solid #00c2ff;
+      border-right: 2px solid #00c2ff;
+    }
+    h1 {
+      font-size: 20px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin: 0 0 4px;
+      background: linear-gradient(90deg,#00e08d,#00c2ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    h1::before { content: "> "; -webkit-text-fill-color: #00e08d; }
+    .sub { color: #71859f; font-size: 12px; margin-bottom: 18px; letter-spacing: 1px; }
+    .warn {
+      background: rgba(255,176,32,.1);
+      border: 1px solid #ffb020;
+      color: #ffd479;
+      padding: 12px 14px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      line-height: 1.55;
+    }
+    .warn strong { color: #ffc857; }
+    .meta { font-size: 12px; color: #71859f; margin-bottom: 18px; line-height: 1.6; }
+    .meta strong { color: #00e08d; }
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    #btnYes {
+      position: relative;
+      background: linear-gradient(135deg, #00e08d, #00c2ff);
+      color: #02140c;
+      margin-bottom: 10px;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+      box-shadow: 0 0 20px rgba(0,224,141,0.35);
+    }
+    #btnNo { background: #0f1626; color: #71859f; border: 1px solid #1e2a44; }
+    #btnYes:disabled, #btnNo:disabled { opacity: .5; cursor: default; }
+    #status {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border: 1px solid #1e2a44;
+      font-size: 12px;
+      display: none;
+    }
+    #status.ok { display: block; background: rgba(0,224,141,.1); border-color: #00e08d; color: #7fe6cd; }
+    #status.err { display: block; background: rgba(255,92,92,.1); border-color: #ff5c5c; color: #ff9b9b; }
+    #status.info { display: block; background: rgba(140,160,190,.1); border-color: #1e2a44; color: #aebcd0; }
+    footer { margin-top: 18px; font-size: 11px; color: #55667c; text-align: center; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Compartir ubicación</h1>
+    <p class="sub">MF Tech - OSINT &middot; Enlace de localización</p>
+
+    <div class="warn">
+      Si tocás el botón verde, esta página enviará <strong>tu ubicación actual (coordenadas GPS)</strong>
+      al panel de la persona que te envió este enlace, <strong>una sola vez</strong>.
+      No se envía nada si no tocás el botón.
+    </div>
+
+    <div class="meta">
+      Solicitud de ubicación voluntaria.
+      {% if nota and nota != 'desconocido' %}
+      <br>Etiqueta del remitente: <strong>{{ nota }}</strong>
+      {% endif %}
+      <br>Al enviar, la ubicación podrá verse en Google Maps desde el panel del remitente.
+    </div>
+
+    <button id="btnYes">Compartir mi ubicación (enviar una vez)</button>
+    <button id="btnNo">No compartir</button>
+
+    <div id="status"></div>
+    <footer>Uso legítimo: compartir la ubicación solo con tu consentimiento.</footer>
+  </div>
+
+  <script>
+    (function () {
+      var token = "{{ token }}";
+
+      var btnYes = document.getElementById("btnYes");
+      var btnNo = document.getElementById("btnNo");
+      var statusEl = document.getElementById("status");
+
+      function setStatus(kind, msg) {
+        statusEl.className = kind;
+        statusEl.textContent = msg;
+      }
+
+      function secureOk() {
+        if (location.protocol === "https:") return true;
+        if (location.hostname === "localhost" || location.hostname === "127.0.0.1") return true;
+        return false;
+      }
+
+      btnYes.addEventListener("click", function () {
+        btnYes.disabled = true;
+        btnNo.disabled = true;
+
+        if (!("geolocation" in navigator)) {
+          setStatus("err", "Este navegador no dispone de geolocalización.");
+          return;
+        }
+        if (!secureOk()) {
+          setStatus("err", "El navegador bloquea la geolocalización por HTTP. Abrí el enlace con https.");
+          btnYes.disabled = false;
+          btnNo.disabled = false;
+          return;
+        }
+
+        setStatus("info", "Pidiendo tu ubicación...");
+        navigator.geolocation.getCurrentPosition(
+          function (pos) {
+            fetch("/api/gps/report/" + encodeURIComponent(token), {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+                accuracy: pos.coords.accuracy
+              })
+            }).then(function (r) { return r.json(); }).then(function (d) {
+              if (d.ok) setStatus("ok", "Ubicación enviada correctamente. Podés cerrar esta página.");
+              else setStatus("err", "No se pudo completar el envío. Reintentá.");
+            }).catch(function () {
+              setStatus("err", "Error de red al enviar. Reintentá.");
+            });
+          },
+          function (err) {
+            var msg = "No se pudo obtener la ubicación. ";
+            if (err.code === 1) msg += "Se denegó el permiso.";
+            else if (err.code === 2) msg += "El GPS no está disponible ahora.";
+            else if (err.code === 3) msg += "Se agotó el tiempo de espera.";
+            setStatus("err", msg);
+            btnYes.disabled = false;
+            btnNo.disabled = false;
+          },
+          { enableHighAccuracy: true, timeout: 25000, maximumAge: 5000 }
+        );
+      });
+
+      btnNo.addEventListener("click", function () {
+        btnYes.disabled = true;
+        btnNo.disabled = true;
+        setStatus("info", "No se envió ninguna ubicación. Podés cerrar esta página.");
+      });
+    })();
+  </script>
+</body>
+</html>
