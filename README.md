@@ -1,25 +1,324 @@
-# MF Tech - OSINT — Edición Cliente
+# MF Tech - OSINT — 
+ MF TECH - OSINT
+      Sistema de Investigación de Fuentes Abiertas
+                  
+  LEEME / MANUAL DE USUARIO
+====================================================================
 
-Sistema de investigación de fuentes abiertas (OSINT) que corre desde **cualquier PC con Windows** a través del navegador. Esta copia ya viene activada con tu licencia.
+MF Tech - OSINT es una herramienta de investigación de fuentes
+abiertas (OSINT, Open Source INTelligence) que reúne en un solo
+panel las consultas más usadas para investigar:
 
-## Requisitos
+  
+- Personas (DNI, CUIT/CUIL, nombre y apellido, declaraciones
+    juradas, filtraciones de datos).
+  - Correos electrónicos y usuarios (cuentas en servicios, brechas
+    de seguridad).
+  - Teléfonos (validación, operador, geolocalización y enlaces).
+  
+- Empresas y dominios (registro WHOIS, DNS, subdominios, IP,
+    datos oficiales de Argentina).
 
-- Windows 10 / 11
-- Python 3.9 o superior — **opcional**: `iniciar.bat` instala Python automáticamente si no está.
-- Conexión a internet (búsquedas y dependencias en línea).
+Todo desde el navegador, sobre una carpeta que se copia a
+cualquier PC con Windows y se ejecuta con UN doble clic. 
+No
+requiere instalar nada a mano: la primera ejecución prepara el
+sistema automáticamente.
 
-## Arrancar
+Este sistema está pensado para uso profesional autorizado:
+verificación de identidad, prevención de fraude, análisis de
+seguridad e investigaciones legítimas. 
+Cada instalación es única
+y se activa con un archivo de licencia firmado.
 
-1. Doble clic en **`iniciar.bat`** (la primera vez crea su entorno e instala dependencias).
-2. Abrir en el navegador la dirección que muestra: `http://localhost:8090`
-3. Para detener: `Ctrl + C` en la ventana.
 
-Tu licencia está en el archivo `data/licencia.rel`. Si está emitida para **una PC específica**, solo funciona en esa PC; no la copies a otro equipo ni compartas la carpeta.
 
-## Herramientas
 
-Email OSINT, Usuario/Nickname, Teléfono, Whois/Dominio, IP Intelligence, Subdominios, DNS, CUIT/CUIL, DNI (Argentina), Declaraciones Juradas, Breach/Leaks, Empresa (Argentina), Localización (GPS) con consentimiento y Google Dorks.
+2. CARACTERÍSTICAS PRINCIPALES
+----------- 
+Panel web local: todo se opera desde el navegador en
+    http://localhost:8090 ; no envía los datos a ningún servidor
+    central: cada PC consulta las fuentes directamente.
+  
+- 14 herramientas de búsqueda + Proyectos de investigación.
+  - Activación por licencia firmada (firma digital Ed25519): la
+    herramienta solo se abre si la licencia es válida y, si fue
+    emitida para una PC concreta, solo funciona en esa PC.
+ 
+- Autopreparación: si la PC no tiene Python, se instala solo
+    desde la carpeta "instalador" (32 o 64 bits según la PC);
+    crea su entorno virtual y descarga sus dependencias.
+  
+- Túnel público opcional (Cloudflare) para la herramienta de
+    Localización (GPS), sin cuenta ni instalación extra.
+  - Proyectos: guardá los resultados de tus búsquedas y exportá
+    un informe en PDF.
 
-## Nota legal
 
-Uso exclusivo para investigación legítima, verificación de identidad y fines autorizados. Respete la legislación vigente (Ley 25.326 en Argentina) y los términos de servicio de los servicios consultados.
+Requisitos de la PC:
+  - Windows 10 / 11 (también funciona en Windows 7/8 con 64 bits).
+  - Conexión a internet (consultas en línea y, la primera vez,
+    descarga de dependencias).
+  - Sin instalación previa de nada: el lanzador lo resuelve solo.
+
+
+
+
+3. CÓMO SE EJECUTA EN LA PC
+----------
+
+Paso 1 - Copiar la carpeta
+  Copiar toda la carpeta del sistema a la PC donde se va a usar
+  (por ejemplo a C:\MF-Tech). NO hace falta instalarla: se
+  ejecuta directo desde la carpeta.
+
+Paso 2 - Arrancar
+  Hacer DOBLE CLIC en el archivo "iniciar.bat".
+  
+La primera vez (puede demorar varios minutos):
+    a. Detecta si hay Python. Si no hay, instala automáticamente
+       el que trae la carpeta "instalador".
+    b. Crea un entorno virtual propio (carpeta .venv).
+    c. Descarga e instala las dependencias (requiere internet).
+   
+d. Enciende el servidor local.
+  Las siguientes veces arranca en unos segundos.
+
+Paso 3 - Abrir el panel
+  En el navegador escribir:  http://localhost:8090
+  (La ventana del lanzador muestra la dirección exacta.)
+
+Paso 4 - Detener
+  Cerrar la ventana o presionar Ctrl + C en ella.
+
+
+Notas de ejecución:
+  - El servidor escucha en la red local (puerto 8090), de modo
+    que también se puede abrir desde OTRA PC de la misma red
+    usando la IP que se muestra al arrancar (ej. http://192.168.x.x:8090).
+  - No se cierra/abre con el botón de Windows: se apaga con
+    Ctrl + C o cerrando la ventana negra.
+
+
+
+
+4. ACTIVACIÓN Y LICENCIA
+----------
+
+Cada copia se activa con el archivo "data/licencia.rel", que es
+generado y firmado digitalmente por el proveedor. El sistema
+verifica la firma al iniciar:
+
+  - Licencia de "máquina libre": la carpeta funciona en cualquier
+    PC (es el caso típico para uso propio en varios equipos).
+  
+- Licencia "atada a una PC": solo funciona en la PC cuyo código
+    se usó al emitirla. No la copies a otro equipo ni compartas
+    la carpeta.
+
+No modifiques ni borres el contenido de la carpeta "data"
+(licencia, clave pública, datos de localización).
+
+Si el archivo de licencia está vencido o es inválido, el panel
+muestra la pantalla de activación. Podes pedir una licencia nueva
+al proveedor indicándole el "código de esta PC" que muestra esa
+pantalla.
+
+
+
+
+5. ESTRUCTURA DE LA CARPETA
+----------
+iniciar.bat   Lanzador: prepara y enciende el sistema.
+  app.py     Servidor web (Flask).
+  requirements.txt     Lista de dependencias (se instalan solas).
+  instalador\            Instaladores de Python para PC sin Python.
+  
+tools\   Binarios extra (cloudflared para GPS, etc.)
+  core\    Motores de las 14 herramientas.
+  static\   Interfaz (página y scripts).
+  templates\    Plantillas del panel.
+  data\
+    licencia.rel         Archivo de licencia firmado (activación).
+   
+license_public.key   Clave pública de verificación de firma.
+    gps.json    Enlaces de localización (GPS).
+    proyectos.json       Proyectos de investigación guardados.
+    cloudflared.log      Registro del túnel público.
+
+
+
+
+6. LAS HERRAMIENTAS, UNA POR UNA
+---------- 
+
+Cada herramienta abre en el panel con lo que hay que ingresar y
+muestra el resultado de su análisis + enlaces directos a las
+fuentes. Todas son consultas a fuentes abiertas y públicas.
+
+
+a) Email OSINT
+   Qué hace:  Verifica qué plataformas/servicios están asociados
+ a un correo electrónico (registro en redes, foros, sitios) consultando cada servicio.
+   Se ingresa: email@dominio.com
+   Resultado:  Servicios donde aparece la cuenta + enlaces de
+  búsqueda del email (Google, leak, pastes).
+
+
+b) Usuario / Nickname
+   Qué hace:  Busca el mismo nombre de usuario en MÁS DE 300
+  plataformas (redes sociales, foros, juegos).
+   Se ingresa: nickname
+   Resultado:  Lista de perfiles existentes y sus URLs.
+
+
+c) Teléfono
+   Qué hace:  Valida el número, identifica país/operador,
+ geolocalización aproximada y zona horaria usando
+  phonenumbers; plus análisis de formato con
+   phoneinfoga; y genera enlaces: Truecaller, WhatsApp,
+  Telegram, buscadores.
+   Se ingresa: +5491100000000 (o número local).
+   Resultado:  Datos del número + enlaces de búsqueda.
+
+
+d) Whois / Dominio
+   Qué hace:  Consulta el registro WHOIS del dominio: titular,
+  fechas de creación/vencimiento, DNS, estado.
+ Se ingresa: dominio.com
+   Resultado:  Datos de registro + enlaces de verificación.
+
+
+e) CUIT / CUIL (Argentina)
+   Qué hace:  Valida el número con su dígito verificador,
+determina tipo (persona física/empresa, prefijo de
+ sexo y CUIT/CUIL) y genera enlaces de consulta
+  (AFIP, Boletín Oficial, padrones).
+   Se ingresa: 20XXXXXXXXX (11 dígitos)
+   Resultado:  Validación + análisis + enlaces.
+
+
+f) DNI (Argentina)
+   Qué hace:  Valida el número del documento y arma enlaces de
+ consulta: padrón electoral, ANSES (obtener CUIL),
+ guía telefónica inversa, Boletín Oficial y búsqueda
+ web del número.
+   Se ingresa: 6 a 8 dígitos.
+   Resultado:  Enlaces oficiales para continuar la verificación.
+
+
+g) Declaraciones Juradas
+   Qué hace:  Accede a los portales oficiales de DDJJ e
+ interroga la API de datos abiertos del Poder
+ Judicial y del Estado (datos.jus.gob.ar y
+  datos.gob.ar) listando datasets de declaraciones
+  juradas de funcionarios públicos.
+   Se ingresa: nombre y apellido (opcional).
+   Resultado:  Datasets oficiales + portales + búsquedas del nombre.
+
+
+h) Breach / Leaks
+   Qué hace:  Arma enlaces para verificar si un email o usuario
+ aparece en filtraciones de datos conocidas. Se ingresa: email@dominio.com o usuario.
+   Resultado:  Enlaces: Have I Been Pwned, Dehashed,
+ BreachDirectory, EmailRep, detección de emails
+ descartables y búsquedas de la filtración.
+
+
+i) Empresa (Argentina)
+   Qué hace:  Abre la investigación de una empresa por razón
+ social o CUIT en fuentes oficiales: Boletín Oficial,  BCRA (deuda financiera), IGJ, AFIP y portal de
+  contrataciones.
+   Se ingresa: razón social o CUIT.
+   Resultado:  Enlaces oficiales de consulta.
+j) IP Intelligence
+   Qué hace:  Valida la IP, hace WHOIS (ASN, asignatario, país),
+ reverse DNS y arma enlaces de reputación/abuso:
+ AbuseIPDB, VirusTotal, Shodan, GreyNoise, Censys,
+ IPinfo, Robtex.
+   Se ingresa: 8.8.8.8
+   Resultado:  Datos de la IP + enlaces de reputación.
+
+
+k) Subdominios
+   Qué hace:  Enumera subdominios de un dominio de forma PASIVA
+ (sin tocar el destino) usando crt.sh y la librería
+ sublist3r.
+   Se ingresa: dominio.com
+   Resultado:  Lista de subdominios encontrados + origen.
+
+
+l) DNS Records
+   Qué hace:  Consulta los registros DNS del dominio: A, AAAA,
+ MX, NS, TXT, CNAME, SOA y SPF, más la IP resuelta.
+   Se ingresa: dominio.com
+   Resultado:  Todos los registros consultados.
+
+
+m) Google Dorks
+   Qué hace:  Genera búsquedas avanzadas de Google (y otras)
+ listas para footprinting de una persona, usuario,
+ email, teléfono o dominio.
+   Se ingresa: el texto a investigar.
+   Resultado:  Decenas de búsquedas generadas (perfiles, leaks,
+ documentos, fotos, noticias, etc.).
+
+
+n) Localización (GPS)
+   Qué hace:  Genera un enlace con un mensaje amable (podés
+ elegir el texto entre varios) para pedirle a alguien
+ que COMPARTA SU UBICACIÓN VOLUNTARIAMENTE. La otra
+ persona lo abre, acepta y aparecen sus coordenadas
+ en Google Maps dentro del panel.
+   Se ingresa: elegir el mensaje a enviar.
+   Resultado:  Enlace a compartir + posición reportada en Maps.
+   Nota: es de CONSENTIMIENTO y con su permiso; nunca automatiza
+ la obtención de ubicación de terceros.
+
+ADEMÁS:
+
+
+o) Proyectos
+   Qué hace:  Organiza las investigaciones. Creás un proyecto,
+ lo activás y cada búsqueda que hacés se puede
+ guardar ahí (automático o manual). Genera un
+ INFORME EN PDF con los resultados.
+   Se ingresa: nombre del proyecto (y si querés, descripción).
+   Resultado:  Dashboard de proyectos + informe PDF.
+
+
+
+
+7. TÚNEL PÚBLICO (Cloudflare) Y LOCALIZACIÓN
+----------
+
+El sistema arranca automáticamente un túnel Cloudflare gratuito
+(tools\cloudflared.exe, sin cuenta ni configuración) para que la
+herramienta de Localización (GPS) se pueda compartir por internet,
+no solo por la red local. Al iniciar se muestra la URL pública
+https://...trycloudflare.com en la ventana y en el panel.
+Ese túnel es transitorio: si se reinicia el sistema, se genera una
+URL nueva (se muestra de nuevo automáticamente).
+
+
+Si no hay internet o el túnel no puede conectarse, la herramienta
+GPS igual funciona pero solo con equipos conectados a la MISMA
+red local.
+
+
+
+
+8. USO RESPONSABLE Y NOTA LEGAL
+-------------- 
+Uso exclusivo para investigación legítima, verificación de
+    identidad, prevención de fraude y fines autorizados por ley.
+  - Respete la legislación vigente (en Argentina, Ley 25.326 de
+    Protección de Datos Personales) y los términos de servicio de
+    cada servicio consultado.
+  - Las consultas realizadas quedan reflejadas en la actividad de
+    las fuentes públicas visitadas.
+  - 
+La Localización (GPS) solo opera con el consentimiento de la
+    persona que comparte su ubicación.
+====================================================================
+
