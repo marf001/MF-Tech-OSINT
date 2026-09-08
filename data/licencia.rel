@@ -1,0 +1,14 @@
+{
+ "algo": "ed25519",
+ "payload": {
+  "id": "63b64ba98f13",
+  "usuario": "GitHub",
+  "version": "v1.0",
+  "emitida": "2026-09-07T21:18:12",
+  "expira": "2026-12-31",
+  "maquina": null,
+  "pool_id": "7374a1b73c6f",
+  "email": "soporte@github.com"
+ },
+ "sig": "3a860e2fb555111aa302522efce86bb5ce6df352104be6dd2a33de907498e5ea7a95f055322dd48f395f961dfd76bfd5fd8e7920848c27244c61c9035c96cc04"
+}
